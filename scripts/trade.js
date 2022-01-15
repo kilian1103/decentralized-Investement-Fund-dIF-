@@ -4,7 +4,7 @@ require('dotenv').config();
 
 const ROUTER_ADDRESS = '0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D';
 const WETH_ADDRESS = '0xc778417E063141139Fce010982780140Aa0cD5Ab';
-const DAI_ADDRESS = '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa'; 
+const DAI_ADDRESS = '0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984'; 
 
 
 const url = process.env.RINKEBY_URL;
@@ -12,7 +12,7 @@ const provider = new ethers.providers.JsonRpcProvider(url);
 let privateKey = process.env.PRIVATE_KEY;
 let wallet = new ethers.Wallet(privateKey, provider);
 
-const amountIn = ethers.utils.parseUnits('0.3', 'ether');
+const amountIn = ethers.utils.parseUnits('0.5', 'ether');
 
 
 
@@ -56,12 +56,12 @@ async function main() {
     {gasLimit : 10**6}
   );
 
-  function wait(ms){
-    var start = new Date().getTime();
-    var end = start;
-    while(end < start + ms) {
-      end = new Date().getTime();
-   }}
+  // function wait(ms){
+  //   var start = new Date().getTime();
+  //   var end = start;
+  //   while(end < start + ms) {
+  //     end = new Date().getTime();
+  //  }}
   
   // wait(20000);
   let balanceDaiAfter = amountsOut[1].add(balanceDaiBefore);
@@ -117,35 +117,4 @@ main()
     process.exit(1);
 });
 
-// module.exports = async done => {
-//   try {
-    // const [admin, _] = await web3.eth.getAccounts();
-    // const router = await Router.at(ROUTER_ADDRESS);
-    // const weth = await Weth.at(WETH_ADDRESS);
-    // const dai = await Dai.at(DAI_ADDRESS);
 
-    // await weth.deposit({value: amountIn}) 
-    // await weth.approve(router.address, amountIn);
-
-    // const amountsOut = await router.getAmountsOut(amountIn, [WETH_ADDRESS, DAI_ADDRESS]);
-    // const amountOutMin = amountsOut[1]
-    //     .mul(web3.utils.toBN(90))
-    //     .div(web3.utils.toBN(100));
-    // const balanceDaiBefore = await dai.balanceOf(admin);
-
-    // await router.swapExactTokensForTokens(
-    //   amountIn, 
-    //   amountOutMin,
-    //   [WETH_ADDRESS, DAI_ADDRESS],
-    //   admin,
-    //   Math.floor((Date.now() / 1000)) + 60 * 10
-    // );
-
-    // const balanceDaiAfter = await dai.balanceOf(admin);
-    // const executionPerf = balanceDaiAfter.sub(balanceDaiBefore).div(amountsOut[1]);
-    // console.log(executionPerf.toString());
-//   } catch(e) {
-//     console.log(e);
-//   }
-//   done();
-// };
