@@ -56,35 +56,100 @@ interface ERC20 {
 
 contract dInvestmentFund {
 
+  constructor() payable{}
+
   event Deposit();
   event Withdraw();
   event CoinAdded();
   event ChangedMiningState();
   event InvestedAll();
   event CashedOutAndDestroyed();
-  
+  event UpdatedAssetList();
+
+
   address private ROUTER_ADDRESS = address(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D);
   address private FACTORY_ADDRESS = address(0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f);
   address private WETH_ADDRESS = address(0xc778417E063141139Fce010982780140Aa0cD5Ab);
-  address payable[] public owners;
   string public strategy;
+
+
+  // multi sig code
+  address[] public owners;
+  uint256 public required;
+  mapping(address => bool) hasPaid;
+  mapping(address => bool) isOwner;
+
+
+
 
   mapping (string => uint) public balance;
   mapping(string => address) public coin_addresses;
   mapping(string => uint) public liquidity_coin_balance;
+
+
   string[] public coin_names;
   ERC20 private weth = ERC20(WETH_ADDRESS);
   Router private router = Router(ROUTER_ADDRESS);
   Factory private factory = Factory(FACTORY_ADDRESS);
 
-  constructor() payable {
-    // require(msg.value >= 0.01 ether, "You have to invest at least 0.01 ETH");
-    owners.push(payable(msg.sender));   
-  }
+  
+  struct FundInfo {
+		string[] _coin_names;
+    uint[] _coin_assets;
+    uint[] _liquidity_coin_assets;
+	}
 
-  function listInvestments() pure external returns(string memory) {
-    return "No coins to buy yet";
-  }
+  //  constructor(address[] memory _owners, uint numberOfConf) payable {
+  //    require(_owners.length > 0, "WAS DU HURNSOHN" );
+  //    require(numberOfConf > 0);
+  //    require(numberOfConf <= _owners.length);
+  //      for(uint i = 0; i < _owners.length; i++){
+  //            owners.push(_owners[i]);
+  //            isOwner[_owners[i]] = true;
+  //        }
+  //        required = numberOfConf;
+  //  }
+
+ 
+
+  mapping(address => bool) hasVoted_Buy;
+  uint yesVotes_Buy;
+  
+   function voteBuyAndStake(bool vote) public {
+     require(hasVoted_Buy[msg.sender] == false, "You have already voted");
+     require (hasPaid[msg.sender], "You havent paid");
+     
+     hasVoted_Buy[msg.sender] = true;
+     if (vote){
+     yesVotes_Buy += 1;
+     }
+
+     if (numberOfVotes_Buy() == owners.length){
+       if(yesVotes_Buy >= required){
+          diversifyAndStake();
+       }
+       else {
+          yesVotes_Buy = 0;
+          for (uint i = 0; i < owners.length; i++){
+            hasVoted_Buy[owners[i]] = false;
+          }
+       }
+     }
+   }
+
+
+
+  function numberOfVotes_Buy() public returns (uint){
+    uint counts = 0;
+    for (uint i = 0; i < owners.length; i++){
+      if(hasVoted_Buy[owners[i]]){
+        counts += 1;
+      }
+    }
+    return counts;
+    }
+
+
 
   function tokenBalance (string calldata coin_name) public view returns (uint){
     return balance[coin_name];
@@ -216,7 +281,8 @@ contract dInvestmentFund {
     emit ChangedMiningState();
   }
 
-  function getAssetList() public returns(string[] memory coin_names, uint[] memory coin_assets, uint[] memory liquidity_coin_assets){
+  
+  function showAssetList() public view returns(FundInfo memory){
     uint length = coin_names.length;
     uint[] memory coin_assets = new uint[](length);
     uint[] memory liquidity_coin_assets = new uint[](length);
@@ -224,10 +290,12 @@ contract dInvestmentFund {
       coin_assets[i] = balance[coin_names[i]];
       liquidity_coin_assets[i] = liquidity_coin_balance[coin_names[i]];
     }
-
-    return (coin_names, coin_assets, liquidity_coin_assets);
+    
+    FundInfo memory ret = FundInfo(coin_names, coin_assets, liquidity_coin_assets);
+    return ret;
 
   }
+
 
 
   function diversifyAndStake() public {
@@ -253,14 +321,23 @@ contract dInvestmentFund {
     for (uint i = 0; i < coin_names.length; i++){
       if (balance[coin_names[i]] > 0){
         string memory coinname = coin_names[i];
-        uint coinbalance = balance[coin_names[i]];
         sellCoin(coinname, balance[coin_names[i]]);
       }
     }
     emit CashedOutAndDestroyed();
-    selfdestruct(owners[0]); 
+    selfdestruct(payable(owners[0])); 
  }
+
+
+ function buyIn() public payable{
+    require(isOwner[msg.sender] == true, "You are not on the owner list!");
+    require(msg.value >= 0.02 ether, "You haven't sent enough funds!");
+    require(hasPaid[msg.sender] == false, "You paid already!");
+    hasPaid[msg.sender] = true;
+
+  }
 
   // fallback function
   receive() external payable {}
+
 }

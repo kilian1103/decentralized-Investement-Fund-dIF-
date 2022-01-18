@@ -1,5 +1,5 @@
 const ethers = require('ethers');
-const BigNumber = require('bignumber.js');
+hre = require('hardhat');
 require('dotenv').config();
 
 async function main() {
@@ -16,11 +16,16 @@ async function main() {
 
   let factory = new ethers.ContractFactory(artifacts.abi, artifacts.bytecode, wallet);
 
-  let dif = await factory.deploy({value : ethers.utils.parseEther('0.02')});
+
+
+  let owners = ['0x0b1e46e42c49f450aF30769C4BC2a3CF0425A8c1', '0xfE0b8d9aC9CCb38574dfA98751256F479A9e888C'];
+
+  let dif = await factory.deploy();
 
   await dif.deployed(); 
 
   console.log("Fund address:", dif.address);
+  console.log(dif)
 
   // let artifactsCOIN = await hre.artifacts.readArtifact("Coin");
   // let artifactsFACTORY = await hre.artifacts.readArtifact("Factory");
@@ -34,6 +39,8 @@ async function main() {
   const DAI_ADDRESS = '0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa'; // DAI COIN
   
   const coin_name = 'Dai'
+
+
   
 
   // const FACTORY_ADDRESS = '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f';
@@ -53,40 +60,6 @@ async function main() {
   await tx.wait();
 
 
-  // let allToken = await dif.callStatic.tokenBalance(coin_name);
-  // console.log("Contract Balance before buying: ", allToken.toString());
-  // console.log(".....");
-  // console.log("Buying Coins...");
-  // console.log(".....");
-  // tx = await dif.buyCoin(coin_name, ethers.utils.parseEther('0.005'),{gasLimit : 10**7})
-  // await tx.wait();
-  // allToken = await dif.callStatic.tokenBalance(coin_name);
-  // console.log("Contract Balance after buying: ", allToken.toString());
-  // console.log(".....");
-
-  // console.log("Staking Coins for Liquidity Mining");
-  // console.log(".....");
-  // tx = await dif.startMiningLiquidity(coin_name,{gasLimit : 10**7});
-  // await tx.wait();
-
-  // console.log("Removing Coins from Liquidity Mining");
-  // console.log(".....");
-  // tx = await dif.stopMiningLiquidity(coin_name,{gasLimit : 10**7});
-  // await tx.wait();
-
-  // allToken = await dif.callStatic.tokenBalance(coin_name);
-  // console.log("Contract Balance before selling: ", allToken.toString());
-  // console.log(".....");
-
-  // console.log("Selling Coins...");
-  // console.log(".....");
-  // tx = await dif.sellCoin(coin_name, allToken,{gasLimit : 10**7});
-  // await tx.wait();
-  // allToken = await dif.callStatic.tokenBalance(coin_name);
-  // console.log("Contract Balance after selling: ", allToken.toString());
-
-
-
   console.log("...");
   console.log("Buying coins: ", name_array);
   console.log("...");
@@ -95,34 +68,49 @@ async function main() {
   tx = await dif.diversifyAndStake({gasLimit : 10**7});
   await tx.wait();
 
-  let {coin_names, coin_assets, liquidity_coin_assets} = await dif.getAssetList({gasLimit : 10**7});
+
+  let fundinfo = await dif.showAssetList({gasLimit : 10**7});
+
 
 
   console.log("...");
   console.log("YOUR ASSETS ARE");
   console.log("...");
-  console.log("COINNAMES: ", coin_names);
-  console.log("BALANCE: ", coin_assets);
-  console.log("LIQUIDITY: ", liquidity_coin_assets);
+  console.log("COINNAMES: ", fundinfo._coin_names);
+  console.log("BALANCE: ", fundinfo._coin_assets.map(x => x.toString()));
+  console.log("LIQUIDITY: ", fundinfo._liquidity_coin_assets.map(x => x.toString()));
+  console.log("...");
 
   console.log("...");
-  console.log("Selling everything");
+  console.log("BUYING COIN DAI");
   console.log("...");
+
+  tx = await dif.buyCoin('DAI', ethers.utils.parseEther('0.01'),{gasLimit : 10**7});
+  await tx.wait();
  
+ 
+ 
+  fundinfo = await dif.showAssetList({gasLimit : 10**7});
+
+
+  console.log("...");
+  console.log("YOUR ASSETS ARE");
+  console.log("...");
+  console.log("COINNAMES: ", fundinfo._coin_names);
+  console.log("BALANCE: ", fundinfo._coin_assets.map(x => x.toString()));
+  console.log("LIQUIDITY: ", fundinfo._liquidity_coin_assets.map(x => x.toString()));
+  console.log("...");
+
+
+
+  console.log("...");
+  console.log("SELLING EVERYTHING");
+  console.log("...");
+
   tx = await dif.cashOutAndDestroy({gasLimit : 10**7});
   await tx.wait();
 
-
-  let {coin_names2, coin_assets2, liquidity_coin_assets2} = await dif.getAssetList({gasLimit : 10**7});
-
-  console.log("...");
-  console.log("YOUR ASSETS ARE");
-  console.log("...");
-  console.log("COINNAMES: ", coin_names2);
-  console.log("BALANCE: ", coin_assets2);
-  console.log("LIQUIDITY: ", liquidity_coin_assets2);
-
-  console.log("Warum undefined AMK?")
+  console.log("Contract destroyed!")
 
 }
 
