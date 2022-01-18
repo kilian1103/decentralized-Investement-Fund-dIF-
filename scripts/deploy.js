@@ -1,5 +1,4 @@
 const ethers = require('ethers');
-hre = require('hardhat');
 require('dotenv').config();
 
 export async function deploy(owners_array, numberOfConf, buyInAmount) {
