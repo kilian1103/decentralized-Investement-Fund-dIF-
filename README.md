@@ -18,3 +18,5 @@ First deploy the contract and get its address and then run the demo to see its f
 npx hardhat run --network rinkeby scripts/deploy.js
 npx hardhat run --network rinkeby scripts/demo.js
 ```
+
+Developed by K.H. Scheutwinkel and T. Neumann
