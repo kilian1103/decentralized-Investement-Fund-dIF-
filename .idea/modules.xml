@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/smartContractProject.iml" filepath="$PROJECT_DIR$/.idea/smartContractProject.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/decentralizedInvestmentFund.iml" filepath="$PROJECT_DIR$/.idea/decentralizedInvestmentFund.iml" />
     </modules>
   </component>
 </project>
