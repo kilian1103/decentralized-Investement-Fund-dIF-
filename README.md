@@ -1,15 +1,20 @@
-# Basic Sample Hardhat Project
+# decentralized App
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, a sample script that deploys that contract, and an example of a task implementation, which simply lists the available accounts.
+This dApp is written in Javascript and Solidity that utilizes the (rinkeby) Ethereum network to deploy a decentralized
+Investment Fund.
 
-Try running some of the following tasks:
+We utilize hardhat, Metamask, the Alchemy ABI and the rinkeby test-network for development.
+
+The main smart contract is the dInvestmentFund.sol which utilizes an UniSwap interface ABI to exchange Ethers with ERC20
+tokens and provide liquidity to the market. One full cycle of the dAPP does:
+
+BuyIn -> buy Coins -> vote for market making -> show assets -> sell liquidity assets -> cash out and destroy!
+
+How to use the Code:
+
+First deploy the contract and gets its address and then run the demo to see its functionality!
 
 ```shell
-npx hardhat accounts
-npx hardhat compile
-npx hardhat clean
-npx hardhat test
-npx hardhat node
-node scripts/sample-script.js
-npx hardhat help
+npx hardhat run --network rinkeby scripts/deploy.js
+npx hardhat run --network rinkeby scripts/demo.js
 ```

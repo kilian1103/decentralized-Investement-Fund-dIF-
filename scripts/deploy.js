@@ -1,7 +1,13 @@
 const ethers = require('ethers');
 require('dotenv').config();
 
-export async function deploy(owners_array, numberOfConf, buyInAmount) {
+async function main() {
+    // mine and Timos address
+    //const owners_array = ["0x0b1e46e42c49f450aF30769C4BC2a3CF0425A8c1", "0xfE0b8d9aC9CCb38574dfA98751256F479A9e888C"];
+    const owners_array = ["0x0b1e46e42c49f450aF30769C4BC2a3CF0425A8c1"];
+    let numberOfConf = 1;
+    let buyInAmount = "0.02";
+
 
     const url = process.env.RINKEBY_URL;
     let artifacts = await hre.artifacts.readArtifact("dInvestmentFund");
@@ -14,12 +20,12 @@ export async function deploy(owners_array, numberOfConf, buyInAmount) {
         gasLimit: 10 ** 7
     });
     await dif.deployed();
+    console.log("Contract deployed at: ", dif.address);
 
-    return dif
 }
 
 
-deploy()
+main()
     .then(() => process.exit(0))
     .catch(error => {
         console.error(error);

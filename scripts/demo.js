@@ -10,15 +10,12 @@ async function main() {
     let wallet = new ethers.Wallet(privateKey, provider);
 
 
-    const address = "0x6f2eF6ffEd22c6565534c5526E2546Df03d3e6eb"
+    const address = "" //put deployed smart contract address here
     const dif = new ethers.Contract(address, artifacts.abi, wallet);
 
-    // await dif.buyIn({value: ethers.utils.parseEther("0.5"), gasLimit: 10 ** 7})
-    // await dif.voteBuyAndStake(false, {gasLimit: 10 ** 7});
-    //await dif.voteBuyAndStake(true, {gasLimit: 10 ** 7});
+    //buy in
+    await dif.buyIn({value: ethers.utils.parseEther("0.02"), gasLimit: 10 ** 7})
 
-
-    await dif.voteCashOutAndDestroy(true, {gasLimit: 10 ** 7});
 
     //buy coins
     const LINK_ADDRESS = '0x01BE23585060835E02B77ef475b0Cc51aA1e0709'; // LINK COIN
@@ -31,8 +28,13 @@ async function main() {
     let tx = await dif.addCoins(name_array, address_array);
     await tx.wait();
 
-    //show assets
-    let fundinfo = await deployedContract.showAssetList({gasLimit: 10 ** 7});
+    //vote for liquidity in market
+    tx = await dif.voteBuyAndStake(true, {gasLimit: 10 ** 7});
+    await tx.wait();
+    //await dif.voteBuyAndStake(false, {gasLimit: 10 ** 7});
+
+    //show total assets
+    let fundinfo = await dif.showAssetList({gasLimit: 10 ** 7});
     console.log("...");
     console.log("YOUR ASSETS ARE");
     console.log("...");
@@ -40,6 +42,9 @@ async function main() {
     console.log("BALANCE: ", fundinfo._coin_assets.map(x => x.toString()));
     console.log("LIQUIDITY: ", fundinfo._liquidity_coin_assets.map(x => x.toString()));
     console.log("...");
+
+    //vote for cashing out of liquidity and cash out back to ethers and destroy contract
+    await dif.voteCashOutAndDestroy(true, {gasLimit: 10 ** 7});
 
 
 }
