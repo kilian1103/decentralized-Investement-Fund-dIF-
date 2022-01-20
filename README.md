@@ -9,7 +9,7 @@ The main smart contract is the
 ```shell
 dInvestmentFund.sol
 ```
-file which uses an UniSwap interface API to exchange Ethers with ERC20
+file which uses an UniSwap interface ABI to exchange Ethers with ERC20
 tokens and provide liquidity to the market. One full cycle of the dAPP does the following:
 
 BuyIn -> buy Coins -> vote for market making -> show assets -> sell liquidity assets -> cash out and destroy!
