@@ -3,8 +3,7 @@ require('dotenv').config();
 
 async function main() {
     // mine and Timos address
-    //const owners_array = ["0x0b1e46e42c49f450aF30769C4BC2a3CF0425A8c1", "0xfE0b8d9aC9CCb38574dfA98751256F479A9e888C"];
-    const owners_array = ["0x0b1e46e42c49f450aF30769C4BC2a3CF0425A8c1"];
+    const owners_array = ["FILL IN YOUR WALLET"]; // Put your wallet address in here
     let numberOfConf = 1;
     let buyInAmount = "0.02";
 
