@@ -16,7 +16,8 @@ full cycle of the dAPP does the following:
 
 BuyIn -> buy Coins -> vote for market making -> show assets -> sell liquidity assets -> cash out and destroy!
 
-How to use the Code:
+How to use the Code
+-------------------
 
 First deploy the contract and get its address and then run the demo to see its functionality!
 
@@ -34,5 +35,11 @@ PRIVATE_KEY=YOURKEY
 
 Furthermore, you need to add your wallet address in the `deploy.js` and after deployment add the contract address in `
 demo.js` to execute the functions of the contract.
+
+Further ideas for improvement
+-----------------------------
+
+- Add frontend to connect wallet to deploy the contract
+- Display contract console output to frontend
 
 Developed by K.H. Scheutwinkel and T. Neumann
