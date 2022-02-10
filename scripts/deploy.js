@@ -2,10 +2,10 @@ const ethers = require('ethers');
 require('dotenv').config();
 
 async function main() {
-    // mine and Timos address
+
     const owners_array = ["FILL IN YOUR WALLET"]; // Put your wallet address in here
-    let numberOfConf = 1;
-    let buyInAmount = "0.02";
+    let numberOfConf = 1; // number of vote confirmations of a decision
+    let buyInAmount = "0.02"; // buy in amount into contract
 
 
     const url = process.env.RINKEBY_URL;
